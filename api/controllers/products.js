@@ -34,7 +34,7 @@ const single_product_get = (req, res) => {
     .findById(productId)
     .select('-__v')
     .then(product => res.json(product))
-    .catch(() => res.status(404).json({ error: `No product found for ${productId}` }));
+    .catch(() => res.status(400).json({ error: `No product found for ${productId}` }));
 };
 
 const single_product_patch = (req, res) => {

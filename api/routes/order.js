@@ -6,7 +6,7 @@ import { ordersController } from '../controllers';
 const router = Router();
 const { orders_get, orders_post, single_order_get, single_order_delete } = ordersController;
 
-router.get('/', orders_get);
+router.get('/', checkAuth, orders_get);
 
 router.post('/', checkAuth, orders_post);
 
