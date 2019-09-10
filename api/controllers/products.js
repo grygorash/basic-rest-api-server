@@ -39,10 +39,17 @@ const single_product_get = (req, res) => {
 
 const single_product_patch = (req, res) => {
   const _id = req.params.productId;
-  const { errors, isValid } = validateProductPost(req.body);
+  const { errors, isValid } = validateProductPost(req.body, req.files ? req.files : req.body.productImages);
   if (!isValid) return res.status(400).json(errors);
   Product
-    .update({ _id }, { $set: { ...req.body, updatedAt: new Date() } })
+    .update({ _id }, {
+      $set: {
+        title: req.body.title,
+        price: req.body.price,
+        productImages: req.files ? req.files.map(file => file.path) : req.body.productImages,
+        updatedAt: new Date(),
+      },
+    })
     .then(() => res.status(200).json({ message: `Product ${_id} was updated` }))
     .catch(err => res.status(400).json(err));
 };
