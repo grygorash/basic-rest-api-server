@@ -7,7 +7,7 @@ import routes from './api/routes';
 
 const app = express();
 
-const uri = process.env.MBURI;
+const uri = process.env.MDB_URI;
 
 mongoose.connect(uri, { useNewUrlParser: true })
         .then(() => console.log('MongoDB connected'))
@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 
 app.use('/products', routes.product);
 app.use('/orders', routes.order);
+app.use('/users', routes.user);
 
 app.use((req, res, next) => {
   const error = new Error('Page not found');
