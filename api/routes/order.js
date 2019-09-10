@@ -1,40 +1,17 @@
 import { Router } from 'express';
 
-import models from '../models';
 import checkAuth from '../middleware/check-auth';
+import { ordersController } from '../controllers';
 
 const router = Router();
-const { Order, Product } = models;
+const { orders_get, orders_post, single_order_get, single_order_delete } = ordersController;
 
-router.get('/', (req, res) =>
-  Order
-    .find()
-    .select('-__v')
-    .sort({ createdAt: -1 })
-    .populate('product', '-__v')
-    .then(orders =>
-      res.status(200).json({ count: orders.length, orders }))
-    .catch(err => res.status(400).json(err)));
+router.get('/', orders_get);
 
-router.post('/', checkAuth, (req, res) =>
-  Product
-    .findById(req.body.product)
-    .then(() =>
-      new Order({ ...req.body }).save())
-    .then(order => res.status(201).json(order))
-    .catch(err => res.status(400).json(err)));
+router.post('/', checkAuth, orders_post);
 
-router.get('/:orderId', checkAuth, (req, res) =>
-  Order
-    .findById(req.params.orderId)
-    .populate('product', '-__v')
-    .then(order => res.status(200).json(order))
-    .catch(err => res.status(400).json(err)));
+router.get('/:orderId', checkAuth, single_order_get);
 
-router.delete('/:orderId', checkAuth, (req, res) =>
-  Order
-    .remove({ _id: req.params.orderId })
-    .then(() => res.status(200).json({ message: `Order ${_id} was deleted` }))
-    .catch(err => res.status(400).json(err)));
+router.delete('/:orderId', checkAuth, single_order_delete);
 
 export default router;
