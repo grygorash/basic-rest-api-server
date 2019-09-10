@@ -53,7 +53,7 @@ router.post('/signin', (req, res) => {
             { expiresIn: '1h' },
           );
           result ?
-            res.status(200).json({ success: true, token: `Bearer ${token}` }) :
+            res.status(200).json({ authorization: true, token: `Bearer ${token}` }) :
             res.status(400).json({ error: 'Incorrect password' });
         }) :
         res.status(400).json({ error: 'No user found' }),

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import models from '../models';
+import checkAuth from '../middleware/check-auth';
 
 const router = Router();
 const { Order, Product } = models;
@@ -15,7 +16,7 @@ router.get('/', (req, res) =>
       res.status(200).json({ count: orders.length, orders }))
     .catch(err => res.status(400).json(err)));
 
-router.post('/', (req, res) =>
+router.post('/', checkAuth, (req, res) =>
   Product
     .findById(req.body.product)
     .then(() =>
@@ -23,14 +24,14 @@ router.post('/', (req, res) =>
     .then(order => res.status(201).json(order))
     .catch(err => res.status(400).json(err)));
 
-router.get('/:orderId', (req, res) =>
+router.get('/:orderId', checkAuth, (req, res) =>
   Order
     .findById(req.params.orderId)
     .populate('product', '-__v')
     .then(order => res.status(200).json(order))
     .catch(err => res.status(400).json(err)));
 
-router.delete('/:orderId', (req, res) =>
+router.delete('/:orderId', checkAuth, (req, res) =>
   Order
     .remove({ _id: req.params.orderId })
     .then(() => res.status(200).json({ message: `Order ${_id} was deleted` }))

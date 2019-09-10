@@ -1,7 +1,7 @@
 import Validator from 'validator';
 import isEmpty from './is-empty';
 
-const validateProductPost = data => {
+const validateProductPost = (data, files) => {
   let errors = {}, { title, price } = data;
   title = !isEmpty(title) ? title : '';
   price = !isEmpty(price) ? price : '';
@@ -13,6 +13,8 @@ const validateProductPost = data => {
   Validator.isEmpty(title) ? errors.title = 'Title field is required' : null;
 
   Validator.isEmpty(price) ? errors.price = 'Price field is required' : null;
+
+  !files.length ? errors.productImages = 'Image field is required' : null;
 
   return { errors, isValid: isEmpty(errors) };
 };

@@ -3,6 +3,7 @@ import multer from 'multer';
 
 import models from '../models';
 import validateProductPost from '../../common/validation/product';
+import checkAuth from '../middleware/check-auth';
 
 const router = Router();
 const { Product } = models;
@@ -46,8 +47,8 @@ router.get('/:page&:perPage', (req, res) => {
           res.json({ count, products })));
 });
 
-router.post('/', upload.array('productImage'), (req, res) => {
-  const { errors, isValid } = validateProductPost(req.body);
+router.post('/', checkAuth, upload.array('productImage'), (req, res) => {
+  const { errors, isValid } = validateProductPost(req.body, req.files);
   if (!isValid) return res.status(400).json(errors);
   new Product({
     ...req.body,
@@ -66,7 +67,7 @@ router.get('/:productId', (req, res) => {
     .catch(() => res.status(404).json({ error: `No product found for ${productId}` }));
 });
 
-router.patch('/:productId', (req, res) => {
+router.patch('/:productId', checkAuth, (req, res) => {
   const _id = req.params.productId;
   const { errors, isValid } = validateProductPost(req.body);
   if (!isValid) return res.status(400).json(errors);
@@ -77,7 +78,7 @@ router.patch('/:productId', (req, res) => {
 
 });
 
-router.delete('/:productId', (req, res) => {
+router.delete('/:productId', checkAuth, (req, res) => {
   const _id = req.params.productId;
   Product
     .remove({ _id })
