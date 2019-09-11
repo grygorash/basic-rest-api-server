@@ -5,7 +5,6 @@ const orders_get = (req, res) =>
     .find()
     .select('-__v')
     .sort({ createdAt: -1 })
-    .populate('product', '-__v')
     .then(orders =>
       res.status(200).json({ count: orders.length, orders }))
     .catch(err => res.status(400).json(err));
